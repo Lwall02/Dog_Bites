@@ -30,8 +30,7 @@ data
 
 
 #### Save data ####
-# [...UPDATE THIS...]
-# change the_raw_data to whatever name you assigned when you downloaded it.
-write_csv(the_raw_data, "inputs/data/raw_data.csv") 
+# Save the raw data as 'data' as a CSV into the data file
+write_csv(data, "data/raw_data.csv") 
 
          
