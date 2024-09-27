@@ -74,7 +74,7 @@ test_that("date is in correct date range", {
 })
 
 # Test that the bite_severity column contains valid categories
-test_that("Bite_Circumstance has valid categories", {
+test_that("bite_severity has valid categories", {
   valid_bite_circumstances <- c("VERY SEVERE", "SEVERE", "NOT A BITE", "NON SEVERE")
   expect_true(all(simulated_data$bite_severity %in% valid_bite_circumstances))
 })
