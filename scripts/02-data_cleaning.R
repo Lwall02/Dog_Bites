@@ -21,4 +21,4 @@ clean_data <- data |>
 
 
 #### Save data ####
-write_csv(cleaned_data, "data/analysis_data.csv")
+write_csv(clean_data, "data/analysis_data.csv")
