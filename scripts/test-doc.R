@@ -86,3 +86,11 @@ duplicates <- data |>
   filter(n() > 1) |>
   ungroup() |>
   arrange(Name_of_Dog)
+
+clean_data |>
+  filter(bite_circumstance == "SEVERE" | bite_circumstance == "VERY SEVERE") |>
+  mutate(year = floor_date(date_of_dangerous_act, "year")) |>
+  summarise(
+    count = n(),
+    .by = year
+  )

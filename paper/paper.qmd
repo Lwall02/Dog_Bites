@@ -1,12 +1,11 @@
 ---
-title: "My title"
-subtitle: "My subtitle if needed"
+title: "Data Shows Positive Trend of Dangerous Dog Orders Issued in 2022"
 author: 
   - Liam Wall
-thanks: "Code and data are available at: LINK."
+thanks: "Code and data are available at: https://github.com/Lwall02/Dog_Bites."
 date: 27 September 2024
 date-format: long
-abstract: "First sentence. Second sentence. Third sentence. Fourth sentence."
+abstract: "Over 350 Dangerous Dog Orders are currently active in Toronto. I look at a data set published by the City recording certain metrics about the dangerous dog orders and aim to identify the trends in these agressive behaiors and attacks. I find that instead of severe attacks increasing, since 2022 the trend is positive with 2023 experiencing the most incidents to date. This paper discusses possible explanations for sucha trend and offers the City a few ideas in order to reverse this trend."
 format: pdf
 number-sections: true
 bibliography: references.bib
@@ -18,30 +17,219 @@ bibliography: references.bib
 #| message: false
 
 library(tidyverse)
+library(ggplot2)
+
+clean_data <- read_csv("/Users/liamwall/Dog_bites/data/analysis_data.csv")
 ```
 
 
 # Introduction
 
-You can and should cross-reference sections and sub-sections. We use @citeR.
+A simple Google search tells me that around 300,000 dogs currently reside in the Greater Toronto Area. In stark contrast, only 350 active dangerous dog orders exist. Most people have never had a bad experience with a dog, but any threat to public safety should be addressed with the concern it deserves. Since 2017, the city of Toronto has tracked the dogs issued dangerous dog orders allowing us to track certain metrics and identify trends over the past eight years. Especially as the city population grows, the findings from this report may foreshadow some actions public officials need to take in order to protect the public safety at large. By no means does this paper intend to discourage dog ownership or play the devils advocate in allowing pet ownership in urban areas, but rather its aim is to shed light on a small threat to public safety often ignored or never thought of. With the growing population and a discovery of certain trends in dangerous dog orders, I hope to see ownership of pets protected using proper data to back up these decisions. 
 
-The remainder of this paper is structured as follows. 
-
-
+Therefore, the idea of this paper is to highlight a, albeit small, public safety concern that is often over unrecognized. The remainder of this paper is structured as follows. The Data section explains in depth what a dangerous dog order is, how they are produced, and the metrics by which they are categorized into the Open Data Toronto data base. It further explains some of the details of the measurements recorded while submitting a dangerous dog order into the data base. The Results section shows the broad view of the findings and trends from the data. A depiction of several graphs and figures giving a nice overview of what this data tells us. The Discussion section looks at these figures trends and attempts to offer explanation and advice regarding the findings and actions that can be taken. Finally, the Limitations section acknowledges shortcomings and possible routes for further improvement and research on the subject.
 
 # Data
 
-The data used to produce this paper was made available by Open Data Toronto through their R library 'opendatatoronto' (@opendatatoronto). All actions to the data for the sake of this paper was used on the open source programming language R (@citeR). Specifically the data cleaning, simulation, and testing was made possible by the libraries 'tidyverse' (@tidyverse), 'janitor' (@janitor), 'dplyr' (@dplyr), 'lubridate' for dates (@lubridate), and 'testthat' for the tests  of the simulation and real data sets (@testthat). All graphs and tables throughout this paper were produced using the library 'ggplot2' (@ggplot2).
+The data used to produce this paper was made available by Open Data Toronto through their R library `opendatatoronto` (@opendatatoronto). All actions to the data for the sake of this paper was used on the open source programming language R (@citeR). Specifically the data cleaning, simulation, and testing was made possible by the libraries `tidyverse` (@tidyverse), `janitor` (@janitor), `dplyr` (@dplyr), `lubridate` for dates (@lubridate), and `testthat` for the tests  of the simulation and real data sets (@testthat). All graphs and tables throughout this paper were produced using the library `ggplot2` (@ggplot2).
 
+## Dog Registry Data
+
+The data set used for this paper was named the Registry of Dogs Subject to and Issued a Dangerous Dog Order. The data set is updated monthly and aims to display only the active threats. Active threats being living dogs that live in the Greater Toronto Area, more specifically in one of the twenty-five wards or Toronto. Any non-active threats are removed from the data set. It displays dogs with active dangerous dog orders from February 2017 to current day in September 2024. The oldest dangerous dog order is form 21 February 2017 and the most recent is 14 September 2024. 
+
+There is a total of 357 entries however 3 entries have null values and cannot be used in this paper. There are 354 individual dangerous dog orders and none are second offenses or repeat offenders. The data set tracks the location of the incident, forward sortation area (first three letters of the Toronto zip code), ward number and name, dog name, breed, color, severity of the bite/attack, and its date. An incident that requires an order to made a record added to this data set is any bite, attack, or act of menacing behavior by the dog (for example chasing). If the incident is deemed severe enough by an Animal Control officer the incident is recorded in this data set. 
+
+### Dangerous Dog Order Measurement
+
+The following information regarding the measurement criteria for determining the bite circumstance can be found on the City of Toronto's website (@dog-data). In the event that a dog has bit, attacked, or behaved menacingly to a person and a 311 call was made requiring an Animal Control Officer to respond, the officer will determine the severity of the act. This severity is recorded as the bite circumstance in this data set. The bite circumstance can take a value from the following: very severe, severe, non severe, and not a bite.
+
+In the case of an incident recorded as 'not a bite,' the dog has made no skin contact by teeth. These are typically behaviors such as snarling, growling, and lunging. A 'non severe' incident is when a dog does make skin contact with the teeth or nails yet there are no distinct or deep punctures. As designated by the website mentioned at the beginning of this subsection, a deep puncture is more than one half of the dogs canine tooth. The 'non severe' incidents include skin abrasions, scrapes, welts or redness caused by a dog's teeth or nails. A 'severe' incident occurs when there is at least one deep puncture, lacerations or scrapes in multiple directions, or a bite without a quick release. A single injury of such nature is considered a 'severe' bite. If multiple 'severe' bites occur in the same incident, the incident is recorded as 'very severe.' A 'very severe' incident is multiple attack wounds with punctures greater than half the height of the dog's canine tooth, multiple incidents of lacerations and scrapes, and the dog lunging forward again after biting. 
+
+### Dog Incident Location Measurement
+In addition to the first three letters of the zip code (forward sortation area) and ward number for the incident being recorded, the data set also tracks the type of location. The listed locations in this data set are the following: owner's property, other's private property, public property, park leash free area, park leash required area. Each location is self explanatory except that other's private propetry may be the victim or anyone but the owner's property.
 
 # Results
 
+## Dog Incidents by Year
+There are 354 incidents recorded in the data set averaging about 44 per year since 2017. If we consider only severe and very severe incident there are 217, averaging about 27 incidents per year. The year with the fewest incidents was 2018 in both all incidents and severe and very severe only (@fig-year-1). The most incidents in both categories was 2023 (@fig-year-2). 
+
+```{r}
+#| label: fig-year
+#| fig-cap: ["Number of incidents per year from 2017 to 2024.", "Number of severe and very severe incidents per year from 2017 to 2024"]
+#| warning: false
+#| message: false
+#| echo: false
+#| layout-ncol: 2
+
+clean_data |>
+  mutate(year = floor_date(date_of_dangerous_act, "year")) |>
+  ggplot(aes(x = year)) +
+  geom_bar() +
+  labs(title = "Number of Dangerous Dog Orders Per Year",
+       x = "Year",
+       y = "Number of Incidents") +
+  theme_minimal()
+
+clean_data |>
+  filter(bite_circumstance == "SEVERE" | bite_circumstance == "VERY SEVERE") |>
+  mutate(year = floor_date(date_of_dangerous_act, "year")) |>
+  ggplot(aes(x = year)) +
+  geom_bar() +
+  labs(title = "Number of SEVERE and VERY SEVERE Incidents Per Year",
+       x = "Year",
+       y = "SEVERE and VERY SEVERE") +
+  theme_minimal()
+```
+
+
+## Incidents by Severity
+The greatest number of incidents falls under the severe category. Second most under non severe, followed by not a bite incidents. The least amount of incidents warranting a dangerous dog order are the very severe incidents. (@fig-severity)
+
+```{r}
+#| label: fig-severity
+#| fig-cap: "Count of each type of listed bite severity from 2017 to 2024"
+#| warning: false
+#| message: false
+#| echo: false
+
+
+summary_data <- clean_data |> 
+  summarise(
+    count = n(),
+    .by = bite_circumstance
+  )
+
+ggplot(summary_data, aes(x = "", y = count, fill = bite_circumstance)) +
+  geom_bar(stat = "identity", width = 1) +
+  coord_polar("y") +
+  labs(title = "Distribution of Incidents by Severity") +
+  theme_void() +
+  theme(legend.title = element_blank())
+```
+
+
+## Incidents by Location/Ward
+The most incidents over the span of this data set occurred in Ward 14 and the ward with the least recorded incidents was Ward 7 (@fig-ward-1). The most incidents considering only severe and very severe incidents also occurred in Ward 14 and the ward with least severe and very severe incidents occurred in both Ward 7 and 10 with 2 incidents each since 2017. (@fig-ward-2) 
+
+Most very severe incidents occur on other's private property (locations as explained in the Data section). Each other severity is most common on public property. (@fig-location)
+
+```{r}
+#| label: fig-ward
+#| fig-cap: ["Top 10 occurrences of all incidents in Toronto Wards from 2017 to 2024.", "Top 10 occurrences of severe and very severe incidents per ward from 2017 to 2024"]
+#| warning: false
+#| message: false
+#| echo: false
+#| layout-ncol: 2
+
+clean_data |>
+  summarise(
+    count = n(),
+    .by = ward_number
+  ) |>
+  arrange(-count) |>
+  ggplot(aes(x = ward_number, y = count)) +
+  geom_line() +
+  geom_point() +
+  labs(title = "Count of all types of incidents in each ward",
+       x = "Ward Number",
+       y = "Number of Incidents") +
+  theme_minimal()
+  
+
+clean_data |>
+  filter(bite_circumstance == "SEVERE" | bite_circumstance == "VERY SEVERE") |>
+  mutate(year = floor_date(date_of_dangerous_act, "year")) |>
+  summarise(
+    count = n(),
+    .by = ward_number
+  ) |>
+  arrange(-count) |>
+  ggplot(aes(x = ward_number, y = count)) +
+  geom_line() +
+  geom_point() +
+  labs(title = "Count of severe and very severe incidents in each ward",
+       x = "Ward Number",
+       y = "Number of severe/very severe incidents") +
+  theme_minimal()
+```
+
+```{r}
+#| label: fig-location
+#| fig-cap: "Total occurrence of incidents by location from 2017 to 2024"
+#| warning: false
+#| message: false
+#| echo: false
+#| layout-ncol: 2
+
+
+clean_data |> summarise(
+    count = n(),
+    .by = c(location_of_incident, bite_circumstance)
+  ) |>
+  arrange(location_of_incident) |>
+  ggplot(aes(x = bite_circumstance, y = count, fill = bite_circumstance)) +
+  geom_col() +
+  facet_wrap(~location_of_incident, ncol = 2) + 
+  labs(title = "Incidents by Location and Bite Severity",
+       x = "Bite Severity", y = "Number of occurrences") +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_blank(),
+    legend.title = element_blank()
+  )
+```
+
 
 # Discussion
+This paper looks at the occurrences of each of the four types of bite severity from the past eight years. One thing to observe is that the occurrence of all types of incidences and especially severe and very severe incidents have increased since 2022. The results show that over half of the incidents are of type severe and large portion of those occurring since 2022 (@fig-year-1 and @fig-year-1). We can observe this trend with a scatter plot in combination with a line of best fit. This shows a positive trend in both all incidents (@fig-best-fit-1) and specifically severe and very severe incidents (@fig-best-fit-2). 
+
+```{r}
+#| label: fig-best-fit
+#| fig-cap: ["Scatter plot of all incidents with lineof best fit", "Scatter plot of severe/very severe incidents with lineof best fit"]
+#| warning: false
+#| message: false
+#| echo: false
+#| layout-ncol: 2
+
+clean_data |>
+  summarise(
+    count_of_bite = n(),
+    .by = year_month
+  ) |>
+  ggplot(aes(x = year_month, y = count_of_bite)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = TRUE) +
+  labs(title = "Scatter Plot of All Incidents with Line of Best Fit from 2017 to 2024", 
+       x = "Year", 
+       y = "Count of Total Incidents")
+
+clean_data |>
+  filter(bite_circumstance == "SEVERE" | bite_circumstance == "VERY SEVERE") |>
+  summarise(
+    count_of_bite = n(),
+    .by = year_month
+  ) |>
+  ggplot(aes(x = year_month, y = count_of_bite)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = TRUE) +
+  labs(title = "Scatter Plot of Severe/Very Severe Incidents with Line of Best Fit from 2017 to 2024", 
+       x = "Year", 
+       y = "Count of Severe/Very Severe Incidents")
+```
+
+The reason for such a trend has many possible explanations, including shifts in dog ownership patterns and changes in reporting methods. Although Open Data Toronto states they update the data set monthly, this is mainly to add dangerous dog orders as opposed to removing older ones. It is harder to keep track of dogs as the only updates are when Animal Control is called to an incident. There is less emphasis put on the check-up of these pets to see if they can be removed fromt he data set which may explain such a large amount of incidents since 2022.
+
+In addition, as Toronto is growing in population rapidly and people adapt to the changing environment, so too do their pets (@population). The trend can be cause for concern given that a large portion of these incidents are severe bite incidents. Another observation is that most of the incidents (except for very severe) occur in public spaces not including public parks. This may indicate that dogs are more likely to be involved in altercations outside of their owners property. Unsurprisingly, the number of dangerous dog reports is lowest among both no-leash and leash-required public parks. This is possibly due to the familiarity of these parks with dogs as opposed to the constantly changing and unfamiliar environment of public places and the people in them. Being that there is so many incidences on public property may speak to the necessity of leash laws and emphasizing public safety. 
+
+Another finding was that Ward 14 is home to most of the dangerous dog orders in Toronto. Interestingly, Ward 14 is among the top 5 median income wards of all 25 wards in Toronto (@ward). Possible explanations for such a trend may be the availability of public spaces suitable for dogs, a high density of dog ownership, and perhaps a lack of legislation regarding dog ownership. 
+
+These findings could help inform public policy on ways to improve public safety regarding pet ownership. If further research also supports these claims, with the population of Toronto growing rapidly, efforts to reduce the occurrence of dangerous dog orders is necessary. One simple action to take is enforcement of leash laws in all public spaces except designated parks.
 
 ## Limitations
 
-Weaknesses and next steps should also be included.
+Although Open Data Toronto updates this list monthly, keeping track of these dogs and the incident they were involved in  may be difficult. A large limitation is the lack of context regarding the events, context which may increase the chance of such events. Additionally there is no information on the owners of these pets who could potentially play a very large role in such incidents. We also have no information on the reporting methods except that Animal COntrol responds to the call. Some areas of Toronto may be more likely to report or more likely to see responses than others, having an influence on the entries in this data base.
+
+This analysis puts more focus on the annual changes in dog incidents and less on seasonal or month-to-month changes. Additionally, the data only goes back to 2017 so we lack the ability to see historical trends. This data also does not consider similar information from other cities so we are not able to tell how normal abnormal such findings are. 
 
 
 \newpage
